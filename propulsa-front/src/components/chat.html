@@ -1,0 +1,32 @@
+<!-- Chat Component -->
+<div id="chatContainer" class="fixed bottom-4 right-4 w-96 bg-white rounded-lg shadow-lg flex flex-col"  >
+    <!-- Chat Header -->
+    <div class="bg-blue-600 text-white p-4 rounded-t-lg flex justify-between items-center">
+        <h3 class="text-lg font-semibold">Asistente Virtual</h3>
+        <button id="toggleChat" class="text-white hover:text-gray-200" title="Minimizar chat">
+            <i class="fas fa-minus"></i>
+        </button>
+    </div>
+ 
+    <!-- Chat Messages -->
+    <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-4">
+        <!-- Welcome Message -->
+        <div class="bg-blue-100 rounded-lg p-3 max-w-[80%]">
+            <p class="text-sm text-gray-800">¡Hola! Soy tu asistente virtual. ¿En qué puedo ayudarte hoy?</p>
+        </div>
+    </div>
+ 
+    <!-- Chat Input -->
+    <div class="border-t p-4">
+        <form id="chatForm" class="flex space-x-2">
+            <input type="text" id="chatInput"
+                   class="flex-1 border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                   placeholder="Escribe tu pregunta aquí...">
+            <button type="submit"
+                    class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    title="Enviar mensaje">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </form>
+    </div>
+</div>

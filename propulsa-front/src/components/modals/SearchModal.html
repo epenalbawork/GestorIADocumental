@@ -1,0 +1,195 @@
+<!-- Search Modal -->
+<div id="searchModal" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center hidden">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl">
+        <!-- Modal Header -->
+        <div class="flex justify-between items-center p-6 border-b border-gray-200">
+            <div class="flex items-center space-x-3">
+                <i class="fas fa-search text-blue-600 text-xl"></i>
+                <h3 class="text-xl font-semibold text-gray-800">Búsqueda Avanzada</h3>
+            </div>
+            <button type="button" class="text-gray-400 hover:text-gray-500" aria-label="Cerrar">
+                <i class="fas fa-times text-lg"></i>
+            </button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="p-6">
+            <form id="searchForm" class="space-y-6">
+                <!-- Document Title -->
+                <div>
+                    <label for="searchTitle" class="block text-sm font-medium text-gray-700 mb-1">
+                        Título del Documento
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-file-alt text-gray-400"></i>
+                        </div>
+                        <input type="text" id="searchTitle" name="title" 
+                               class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                               placeholder="Buscar por título...">
+                    </div>
+                </div>
+
+                <!-- Document Type -->
+                <div>
+                    <label for="searchType" class="block text-sm font-medium text-gray-700 mb-1">
+                        Categoría de Documento
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-file text-gray-400"></i>
+                        </div>
+                        <select id="searchType" name="type" 
+                                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none">
+                                <option value="">Seleccionar categoría</option>
+                            <!-- <option value="contract">Contrato</option>
+                            <option value="invoice">Factura</option>
+                            <option value="report">Reporte</option>
+                            <option value="manual">Manual</option>
+                            <option value="other">Otro</option>  -->
+                        </select>
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                            <i class="fas fa-chevron-down text-gray-400"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Date Range -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="searchDateFrom" class="block text-sm font-medium text-gray-700 mb-1">
+                            Fecha Desde
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-calendar-alt text-gray-400"></i>
+                            </div>
+                            <input type="date" id="searchDateFrom" name="dateFrom" 
+                                   class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="searchDateTo" class="block text-sm font-medium text-gray-700 mb-1">
+                            Fecha Hasta
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-calendar-alt text-gray-400"></i>
+                            </div>
+                            <input type="date" id="searchDateTo" name="dateTo" 
+                                   class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tags -->
+                <div>
+                    <label for="searchTags" class="block text-sm font-medium text-gray-700 mb-1">
+                        Etiquetas
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-tags text-gray-400"></i>
+                        </div>
+                        <input type="text" id="searchTags" name="tags" 
+                               class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                               placeholder="Separar etiquetas por comas">
+                    </div>
+                </div>
+
+                <!-- Status -->
+                <div>
+                    <label for="searchStatus" class="block text-sm font-medium text-gray-700 mb-1">
+                        Estado
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-circle text-gray-400"></i>
+                        </div>
+                        <select id="searchStatus" name="status" 
+                                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none">
+                            <option value="">Todos los estados</option>
+                            <option value="active">Activo</option>
+                            <option value="archived">Archivado</option>
+                            <option value="deleted">Eliminado</option>
+                        </select>
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                            <i class="fas fa-chevron-down text-gray-400"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Search -->
+                <div>
+                    <label for="searchContent" class="block text-sm font-medium text-gray-700 mb-1">
+                        Contenido del Documento
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-file-word text-gray-400"></i>
+                        </div>
+                        <input type="text" id="searchContent" name="content" 
+                               class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                               placeholder="Buscar en el contenido del documento...">
+                    </div>
+                </div>
+
+                <!-- Advanced Options -->
+                <div class="border-t border-gray-200 pt-4 hidden" >
+                    <button type="button" class="text-sm text-blue-600 hover:text-blue-800 flex items-center" id="toggleAdvancedOptions">
+                        <i class="fas fa-chevron-down mr-2"></i>
+                        Opciones avanzadas
+                    </button>
+                    <div id="advancedOptions" class="hidden mt-4 space-y-4">
+                        <div>
+                            <label for="searchAuthor" class="block text-sm font-medium text-gray-700 mb-1">
+                                Autor
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-user text-gray-400"></i>
+                                </div>
+                                <input type="text" id="searchAuthor" name="author" 
+                                       class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                       placeholder="Buscar por autor...">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="searchDepartment" class="block text-sm font-medium text-gray-700 mb-1">
+                                Departamento
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-building text-gray-400"></i>
+                                </div>
+                                <select id="searchDepartment" name="department" 
+                                        class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none">
+                                    <option value="">Todos los departamentos</option>
+                                    <option value="finance">Finanzas</option>
+                                    <option value="hr">Recursos Humanos</option>
+                                    <option value="it">TI</option>
+                                    <option value="operations">Operaciones</option>
+                                </select>
+                                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                    <i class="fas fa-chevron-down text-gray-400"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="flex justify-end space-x-3 p-6 border-t border-gray-200">
+            <button type="button" class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-800">
+                <i class="fas fa-times mr-2 text-lg"></i>
+                Limpiar
+            </button>
+            <button type="submit" form="searchForm" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg">
+                <i class="fas fa-search mr-2 text-lg"></i>
+                Buscar
+            </button>
+        </div>
+    </div>
+</div> 

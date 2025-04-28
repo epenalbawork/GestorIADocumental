@@ -1,0 +1,176 @@
+ <!-- Incluir PDF.js en el head de tu documento HTML -->
+<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+<script>
+    // Configurar el worker de PDF.js
+    if (typeof pdfjsLib !== 'undefined') {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+        console.log('PDF.js worker configurado correctamente');
+    } else {
+        console.error('PDF.js no está disponible');
+    }
+</script>
+    <!-- Document List and Preview -->
+    <div class="flex h-screen" id="directoryContent">
+        <!-- Document List -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Header -->
+            <header class="bg-white shadow">
+                <div class="px-4 py-3 flex justify-between items-center">
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-folder-open text-blue-600 text-xl"></i>
+                            <h1 class="text-xl font-semibold">Documentos</h1>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-search text-gray-400"></i>
+                                </div>
+                                <input type="text" placeholder="Buscar documentos..." 
+                                       class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors w-64">
+                            </div>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-filter text-gray-400"></i>
+                                </div>
+                                <select class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none transition-colors"
+                                        title="Filtrar documentos" aria-label="Filtrar documentos">
+                                    <option>Todos los documentos</option>
+                                </select>
+                                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                    <i class="fas fa-chevron-down text-gray-400 text-sm"></i>
+                                </div>
+                            </div>
+                            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center space-x-2" 
+                                    title="Agregar documento" id="add-document-button">
+                                <i class="fas fa-plus text-lg"></i>
+                                <span>Agregar Documento</span>
+                            </button>
+                            <button class="text-gray-600 hover:text-blue-600 p-2 rounded-lg transition-colors" title="Buscar">
+                                <i class="fas fa-search text-lg"></i>
+                                <span class="sr-only">Buscar</span>
+                            </button>
+                            <button class="text-gray-600 hover:text-yellow-500 p-2 rounded-lg transition-colors" title="Favoritos">
+                                <i class="fas fa-star text-lg"></i>
+                                <span class="sr-only">Favoritos</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Document List -->
+<div class="flex-1 overflow-auto">
+    <div class="bg-white shadow rounded-lg p-6">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-semibold text-gray-800">Documentos</h2>
+            <div class="flex space-x-4">
+                <button id="refreshDocuments" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    <i class="fas fa-sync-alt mr-2"></i>Actualizar
+                </button>
+            </div>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table id="documentsTable" class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Nombre
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Tipo
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Estado
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Fecha de Creación
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Acciones
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <!-- Las filas se agregarán dinámicamente aquí -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+        </div>
+
+        <!-- Preview Panel -->
+        <div id="previewPanel" class="w-1/3 bg-white border-l flex flex-col">
+            <div class="flex flex-col h-full">
+                <!-- Preview Header -->
+                <div class="p-4 border-b flex justify-between items-center flex-shrink-0">
+                    <div>
+                        <h3 class="document-name font-semibold">Seleccione un documento</h3>
+                        <span class="document-type text-sm text-gray-500">-</span>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button title="Actualizar" class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-sync-alt"></i>
+                            <span class="sr-only">Actualizar documento</span>
+                        </button>
+                        <button title="Descargar" class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-download"></i>
+                            <span class="sr-only">Descargar documento</span>
+                        </button>
+                        <button title="Imprimir" class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-print"></i>
+                            <span class="sr-only">Imprimir documento</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Preview Navigation -->
+                <div class="px-4 py-2 border-b flex justify-between items-center bg-gray-50 flex-shrink-0">
+                    <div class="flex items-center space-x-2">
+                        <button title="Página anterior" class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-chevron-left"></i>
+                            <span class="sr-only">Página anterior</span>
+                        </button>
+                        <span class="document-page">1/1</span>
+                        <button title="Página siguiente" class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-chevron-right"></i>
+                            <span class="sr-only">Página siguiente</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Preview Content -->
+                <div class="flex-1 overflow-auto relative">
+                    <!-- Empty Preview State -->
+                    <div id="emptyPreview" class="absolute inset-0 flex items-center justify-center text-gray-500">
+                        <div class="text-center">
+                            <i class="fas fa-file-alt text-4xl mb-2"></i>
+                            <p>Seleccione un documento para visualizar</p>
+                        </div>
+                    </div>
+                    <!-- Document Preview Frame -->
+                    <div id="previewFrame" class="w-full h-full hidden"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Initialize document viewer -->
+    <script>
+        // Load directory.js dynamically after content is loaded
+        const script = document.createElement('script');
+        script.src = '../js/directory.js';
+        script.onload = () => {
+            console.log('directory.js loaded successfully');
+            // Asegurar que se cargue la página de dashboard por defecto
+            if (!window.location.href.includes('page=')) {
+                window.location.href = 'index.html?page=dashboard';
+            }
+        };
+        script.onerror = (e) => console.error('Error loading directory.js:', e);
+        document.body.appendChild(script);
+    </script>
+
+ 

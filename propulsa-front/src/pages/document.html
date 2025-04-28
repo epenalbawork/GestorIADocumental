@@ -1,0 +1,120 @@
+<!-- Document Detail Page -->
+<div class="min-h-screen bg-gray-50">
+    <!-- Header -->
+    <div class="bg-white shadow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <button onclick="window.history.back()" class="text-gray-500 hover:text-gray-700" title="Volver atrás">
+                        <i class="fas fa-arrow-left text-xl"></i>
+                    </button>
+                    <h1 class="text-2xl font-semibold text-gray-900" id="document-title">Cargando documento...</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2">
+                        <i class="fas fa-download"></i>
+                        <span>Descargar</span>
+                    </button>
+                    <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center space-x-2">
+                        <i class="fas fa-print"></i>
+                        <span>Imprimir</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Document Preview -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                    <div class="p-4 border-b border-gray-200">
+                        <h2 class="text-lg font-semibold text-gray-900">Vista Previa</h2>
+                    </div>
+                    <div class="p-4">
+                        <div id="document-preview" class="w-full h-full bg-gray-100 rounded-lg flex items-center justify-center" style="height: 900px;">
+                            <div class="text-center">
+                                <i class="fas fa-file-alt text-4xl text-gray-400 mb-2"></i>
+                                <p class="text-gray-500">Cargando documento...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Document Details -->
+            <div class="space-y-8">
+                <!-- Basic Information -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                    <div class="p-4 border-b border-gray-200">
+                        <h2 class="text-lg font-semibold text-gray-900">Información del Documento</h2>
+                    </div>
+                    <div class="p-4 space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-500">Estado</label>
+                            <span id="document-status" class="mt-1 block text-sm text-gray-900">Cargando...</span>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-500">Tipo</label>
+                            <span id="document-type" class="mt-1 block text-sm text-gray-900">Cargando...</span>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-500">Fecha de Subida</label>
+                            <span id="document-upload-date" class="mt-1 block text-sm text-gray-900">Cargando...</span>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-500">Última Actualización</label>
+                            <span id="document-updated-date" class="mt-1 block text-sm text-gray-900">Cargando...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                    <div class="p-4 border-b border-gray-200">
+                        <h2 class="text-lg font-semibold text-gray-900">Descripción</h2>
+                    </div>
+                    <div class="p-4">
+                        <p id="document-description" class="text-sm text-gray-600">Cargando descripción...</p>
+                    </div>
+                </div>
+
+                <!-- Tags -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                    <div class="p-4 border-b border-gray-200">
+                        <h2 class="text-lg font-semibold text-gray-900">Etiquetas</h2>
+                    </div>
+                    <div class="p-4">
+                        <div id="document-tags" class="flex flex-wrap gap-2">
+                            <!-- Tags will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Entities -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                    <div class="p-4 border-b border-gray-200">
+                        <h2 class="text-lg font-semibold text-gray-900">Entidades Detectadas</h2>
+                    </div>
+                    <div class="p-4">
+                        <div id="document-entities" class="space-y-4">
+                            <!-- Entities will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Initialize document viewer -->
+<script>
+    // Load document.js dynamically after content is loaded
+    const script = document.createElement('script');
+    script.src = '../js/document.js';
+    script.onload = () => console.log('document.js loaded successfully');
+    script.onerror = (e) => console.error('Error loading document.js:', e);
+    document.body.appendChild(script);
+</script> 
