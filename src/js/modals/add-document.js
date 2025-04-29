@@ -277,12 +277,12 @@ if (typeof window.AddDocumentModal === 'undefined') {
                 const context = canvas.getContext('2d');
                 canvas.width = viewport.width;
                 canvas.height = viewport.height;
-
+        
                 await page.render({
                     canvasContext: context,
                     viewport: viewport
                 }).promise;
-
+        
                 const preview = document.createElement('div');
                 preview.className = 'file-preview mt-4 border rounded-lg overflow-hidden';
                 preview.appendChild(canvas);

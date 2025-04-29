@@ -1,4 +1,4 @@
- <!-- Incluir PDF.js en el head de tu documento HTML -->
+<!-- Incluir PDF.js en el head de tu documento HTML -->
 <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
 <script>
     // Configurar el worker de PDF.js
@@ -15,45 +15,26 @@
         <div class="flex-1 flex flex-col overflow-hidden">
             <!-- Header -->
             <header class="bg-white shadow">
-                <div class="px-4 py-3 flex justify-between items-center">
-                    <div class="flex items-center space-x-4">
+                <div class="px-4 py-3 flex flex-col space-y-3">
+                    <div class="flex justify-between items-center">
                         <div class="flex items-center space-x-2">
                             <i class="fas fa-folder-open text-blue-600 text-xl"></i>
                             <h1 class="text-xl font-semibold">Documentos</h1>
                         </div>
-                        <div class="flex items-center space-x-3">
-                            <div class="relative">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <i class="fas fa-search text-gray-400"></i>
-                                </div>
-                                <input type="text" placeholder="Buscar documentos..." 
-                                       class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors w-64">
-                            </div>
-                            <div class="relative">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <i class="fas fa-filter text-gray-400"></i>
-                                </div>
-                                <select class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none transition-colors"
-                                        title="Filtrar documentos" aria-label="Filtrar documentos">
-                                    <option>Todos los documentos</option>
-                                </select>
-                                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                                    <i class="fas fa-chevron-down text-gray-400 text-sm"></i>
-                                </div>
-                            </div>
-                            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center space-x-2" 
-                                    title="Agregar documento" id="add-document-button">
-                                <i class="fas fa-plus text-lg"></i>
-                                <span>Agregar Documento</span>
-                            </button>
-                            <button class="text-gray-600 hover:text-blue-600 p-2 rounded-lg transition-colors" title="Buscar">
-                                <i class="fas fa-search text-lg"></i>
-                                <span class="sr-only">Buscar</span>
-                            </button>
-                            <button class="text-gray-600 hover:text-yellow-500 p-2 rounded-lg transition-colors" title="Favoritos">
-                                <i class="fas fa-star text-lg"></i>
-                                <span class="sr-only">Favoritos</span>
-                            </button>
+                    </div>
+                    <!-- Agregar campos de búsqueda -->
+                    <div class="flex space-x-4">
+                        <div class="flex-1">
+                            <input type="text" 
+                                   id="searchTitle" 
+                                   placeholder="Buscar por título..." 
+                                   class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div class="flex-1">
+                            <input type="text" 
+                                   id="searchDescription" 
+                                   placeholder="Buscar por descripción..." 
+                                   class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
                     </div>
                 </div>
@@ -62,14 +43,7 @@
             <!-- Document List -->
 <div class="flex-1 overflow-auto">
     <div class="bg-white shadow rounded-lg p-6">
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-xl font-semibold text-gray-800">Documentos</h2>
-            <div class="flex space-x-4">
-                <button id="refreshDocuments" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                    <i class="fas fa-sync-alt mr-2"></i>Actualizar
-                </button>
-            </div>
-        </div>
+       
 
         <div class="overflow-x-auto">
             <table id="documentsTable" class="min-w-full divide-y divide-gray-200">
@@ -168,9 +142,43 @@
             if (!window.location.href.includes('page=')) {
                 window.location.href = 'index.html?page=dashboard';
             }
+            this.setupSearchFilters();
         };
         script.onerror = (e) => console.error('Error loading directory.js:', e);
         document.body.appendChild(script);
+    </script>
+
+    <script>
+        function setupSearchFilters() {
+            const searchTitle = document.getElementById('searchTitle');
+            const searchDescription = document.getElementById('searchDescription');
+            
+            const filterTable = () => {
+                const titleValue = searchTitle.value.toLowerCase();
+                const descValue = searchDescription.value.toLowerCase();
+                
+                const rows = document.querySelectorAll('#documentsTable tbody tr');
+                
+                rows.forEach(row => {
+                    const titleCell = row.querySelector('td:first-child').textContent.toLowerCase();
+                    const descCell = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                    
+                    const matchesTitle = titleCell.includes(titleValue);
+                    const matchesDesc = descCell.includes(descValue);
+                    
+                    // Mostrar la fila si coincide con ambos criterios de búsqueda
+                    if (matchesTitle && matchesDesc) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            };
+            
+            // Agregar event listeners para búsqueda en tiempo real
+            searchTitle.addEventListener('input', filterTable);
+            searchDescription.addEventListener('input', filterTable);
+        }
     </script>
 
  

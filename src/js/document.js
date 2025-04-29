@@ -142,17 +142,29 @@ function updateDocumentPreview(docData) {
     // Convertir la URL de S3 a CloudFront
     let documentUrl = convertS3UrlToCloudFront(docData.s3_public_url);
 
-    if (docData.type && (docData.type.includes('pdf') || docData.type.includes('application/pdf'))) {
-        // Crear un mensaje informativo
-        
-
+    // Verificar si es una imagen
+    if (docData.type && (
+        docData.type.includes('image/jpeg') || 
+        docData.type.includes('image/jpg') || 
+        docData.type.includes('image/png') || 
+        docData.type.includes('image/gif')
+    )) {
+        // Mostrar la imagen directamente
+        previewContainer.innerHTML = `
+            <div class="flex items-center justify-center h-full">
+                <img src="${documentUrl}" 
+                     alt="Vista previa del documento" 
+                     class="max-w-full max-h-full object-contain"
+                     style="max-height: 900px;">
+            </div>
+        `;
+    } else if (docData.type && (docData.type.includes('pdf') || docData.type.includes('application/pdf'))) {
         // Usar Google Docs Viewer para mostrar el PDF
         const googlePdfViewer = `https://docs.google.com/viewer?url=${encodeURIComponent(documentUrl)}&embedded=true`;
         
         // Crear iframe para mostrar el PDF
         const iframe = window.document.createElement('iframe');
         iframe.className = 'w-full h-full border-0';
-          // Para dejar espacio para el mensaje
         
         // Usar Google Docs Viewer como método principal
         iframe.src = googlePdfViewer;
@@ -182,6 +194,7 @@ function updateDocumentPreview(docData) {
             <div class="text-center py-10">
                 <i class="fas fa-file-alt text-4xl text-gray-400 mb-4"></i>
                 <p class="text-gray-600">Formato no soportado para vista previa</p>
+                <p class="text-sm text-gray-400 mt-2">Tipo de archivo: ${docData.type || 'desconocido'}</p>
                 <a href="${documentUrl}" target="_blank" class="mt-4 inline-block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
                     Abrir documento
                 </a>
@@ -283,9 +296,34 @@ function previewDocument(documentId, documentUrl) {
     // Convertir URL de S3 a CloudFront
     const cloudFrontUrl = convertS3UrlToCloudFront(documentUrl);
     
+    // Obtener la extensión del archivo
+    const fileExtension = documentUrl.split('.').pop().toLowerCase();
+    
     // Cargar el documento en el panel de vista previa
     if (window.documentViewer) {
-        window.documentViewer.loadPdf(cloudFrontUrl);
+        if (['jpg', 'jpeg', 'png', 'gif'].includes(fileExtension)) {
+            // Si es una imagen, mostrarla directamente
+            const previewContainer = document.getElementById('document-preview');
+            previewContainer.innerHTML = `
+                <img src="${cloudFrontUrl}" 
+                     alt="Vista previa del documento" 
+                     class="max-w-full max-h-full object-contain"
+                     style="max-height: 900px;">
+            `;
+        } else if (fileExtension === 'pdf') {
+            // Si es PDF, usar el visor de PDF existente
+            window.documentViewer.loadPdf(cloudFrontUrl);
+        } else {
+            // Para otros tipos de archivo, mostrar un mensaje
+            const previewContainer = document.getElementById('document-preview');
+            previewContainer.innerHTML = `
+                <div class="text-center p-4">
+                    <i class="fas fa-file-alt text-4xl text-gray-400 mb-2"></i>
+                    <p class="text-gray-500">Vista previa no disponible para este tipo de archivo</p>
+                    <p class="text-sm text-gray-400 mt-2">Tipo de archivo: ${fileExtension}</p>
+                </div>
+            `;
+        }
     } else {
         console.log('DocumentViewer no disponible para preview');
         showNotification('Vista previa no disponible en este momento', 'warning');

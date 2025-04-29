@@ -46,10 +46,6 @@ class ChatBot {
                 this.handleSubmit(e);
             }
         });
-
-        if (this.isMinimized) {
-            this.toggleChat();
-        }
     }
  
     async handleSubmit(e) {

@@ -179,7 +179,7 @@
                         <td class="px-6 py-4 whitespace-nowrap">${new Date(doc.upload_date).toLocaleDateString()}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <button class="preview-btn text-blue-600 hover:text-blue-800" data-doc-id="${doc.id}" title="Vista previa">
-                                <i class="fas fa-eye"></i>
+                                <i class="fas fa-file-invoice"></i>
                             </button>
                         </td>
                     `;
@@ -953,7 +953,6 @@
 
     // Función para visualizar el documento en el panel
     function previewDocument(documentId, documentUrl) {
-        
         console.log('Preview document:', documentId, documentUrl);
     
         // Convertir URL de S3 a CloudFront si es necesario
@@ -981,9 +980,40 @@
             }
         }
         
+        // Obtener el tipo de archivo de la URL
+        const fileExtension = documentUrl.split('.').pop().toLowerCase();
+        
         // Cargar el documento en el panel de vista previa
         if (window.documentViewer) {
-            window.documentViewer.loadPdf(documentUrl);
+            if (['jpg', 'jpeg', 'png', 'gif'].includes(fileExtension)) {
+                // Si es una imagen, mostrarla directamente
+                const previewFrame = document.getElementById('previewFrame');
+                if (previewFrame) {
+                    previewFrame.innerHTML = `
+                        <div class="flex items-center justify-center h-full">
+                            <img src="${documentUrl}" 
+                                 alt="Vista previa del documento" 
+                                 class="max-w-full max-h-full object-contain"
+                                 style="max-height: 900px;">
+                        </div>
+                    `;
+                }
+            } else if (fileExtension === 'pdf') {
+                // Si es PDF, usar el visor de PDF existente
+                window.documentViewer.loadPdf(documentUrl);
+            } else {
+                // Para otros tipos de archivo, mostrar un mensaje
+                const previewFrame = document.getElementById('previewFrame');
+                if (previewFrame) {
+                    previewFrame.innerHTML = `
+                        <div class="text-center p-4">
+                            <i class="fas fa-file-alt text-4xl text-gray-400 mb-2"></i>
+                            <p class="text-gray-500">Vista previa no disponible para este tipo de archivo</p>
+                            <p class="text-sm text-gray-400 mt-2">Tipo de archivo: ${fileExtension}</p>
+                        </div>
+                    `;
+                }
+            }
         } else {
             console.log('DocumentViewer no disponible para preview');
             showNotification('Vista previa no disponible en este momento', 'warning');

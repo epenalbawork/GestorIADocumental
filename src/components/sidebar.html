@@ -1,31 +1,35 @@
 <!-- Sidebar -->
-<aside class="sidebar bg-white border-r">
-    <div class="p-4 text-xl font-bold border-b">
+<aside class="sidebar bg-gradient-to-b from-white via-purple-50 to-blue-50 border-r">
+    <div class="p-4 text-xl font-bold border-b bg-white">
         <img src="images/logoCiber2.png" alt="Logo" class="w-40 h-10 object-contain">
     </div>
-    <button class="toggle-sidebar" title="Colapsar menú">
-        <i class="fas fa-chevron-left"></i>
+    <button class="toggle-sidebar hover:bg-purple-100/50 transition-colors duration-150" title="Colapsar menú">
+        <i class="fas fa-chevron-left text-purple-600"></i>
     </button>
-    <nav class="p-4 space-y-2">
-        <a href="index.html?page=dashboard" class="menu-item active" title="Panel de Control" data-page="dashboard">
-            <i class="fas fa-chart-line menu-icon"></i>
-            <span class="menu-text">Panel de Control</span>
+    <nav class="p-4 space-y-3">
+        <a href="index.html?page=dashboard" class="menu-item active group" title="Panel de Control" data-page="dashboard">
+            <i class="fas fa-chart-line menu-icon text-blue-500 group-hover:text-blue-600 transition-colors duration-150"></i>
+            <span class="menu-text font-medium text-gray-700">Panel de Control</span>
         </a>
-        <a href="#" class="menu-item" title="Agregar Documento" data-modal="add-document">
-            <i class="fas fa-file-upload menu-icon"></i>
-            <span class="menu-text">Agregar Documento</span>
+        
+        <a href="#" class="menu-item group" title="Agregar Documento" data-modal="add-document">
+            <i class="fas fa-file-upload menu-icon text-green-500 group-hover:text-green-600 transition-colors duration-150"></i>
+            <span class="menu-text font-medium text-gray-700">Agregar Documento</span>
         </a>
-        <a href="#" class="menu-item" title="Buscar Documento" data-modal="search">
-            <i class="fas fa-search menu-icon"></i>
-            <span class="menu-text">Buscar Documento</span>
+        
+        <a href="#" class="menu-item group" title="Buscar Documento" data-modal="search">
+            <i class="fas fa-search menu-icon text-amber-500 group-hover:text-amber-600 transition-colors duration-150"></i>
+            <span class="menu-text font-medium text-gray-700">Buscar Documento</span>
         </a>
-        <a href="index.html?page=directory" class="menu-item" title="Directorio" data-page="directory">
-            <i class="fas fa-folder-open menu-icon"></i>
-            <span class="menu-text">Directorio</span>
+        
+        <a href="index.html?page=directory" class="menu-item group" title="Directorio" data-page="directory">
+            <i class="fas fa-folder-open menu-icon text-purple-500 group-hover:text-purple-600 transition-colors duration-150"></i>
+            <span class="menu-text font-medium text-gray-700">Directorio</span>
         </a>
-        <a href="index.html?page=document" class="menu-item" title="Documento" data-page="document">
-            <i class="fas fa-file-alt menu-icon"></i>
-            <span class="menu-text">Documento</span>
+        
+        <a href="index.html?page=document" class="menu-item group" title="Documento" data-page="document">
+            <i class="fas fa-file-alt menu-icon text-rose-500 group-hover:text-rose-600 transition-colors duration-150"></i>
+            <span class="menu-text font-medium text-gray-700">Documento</span>
         </a>
     </nav>
 </aside> 
