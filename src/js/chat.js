@@ -93,7 +93,7 @@ class ChatBot {
             // Remove loading message
             loadingMessage.remove();
            
-            // Add bot response
+            // Add bot response with formatting
             this.addMessage(data.answer || 'Lo siento, no pude procesar tu pregunta.', 'bot');
         } catch (error) {
             console.error('Error:', error);
@@ -108,8 +108,74 @@ class ChatBot {
                 ? 'bg-blue-600 text-white ml-auto'
                 : 'bg-gray-100 text-gray-800'
         }`;
-       
-        messageDiv.innerHTML = `<p class="text-sm">${text}</p>`;
+        
+        // Formatear texto para respuestas del bot con estructura específica
+        if (sender === 'bot' && !isTemporary) {
+            // Detectar si es una respuesta de documento de identidad
+            if (text.includes('DOCUMENTO:') && text.includes('TITULAR:') && text.includes('ESTADO:')) {
+                // Extraer información
+                const lines = text.split('\n');
+                let formattedHTML = '';
+                
+                // Procesar líneas para extraer información estructurada
+                for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i];
+                    
+                    if (line.includes('DOCUMENTO:')) {
+                        // Primera línea - Documento
+                        const documentTitle = line.replace('DOCUMENTO:', '').trim();
+                        formattedHTML += `<div class="font-bold text-blue-800">${documentTitle}</div>`;
+                    } 
+                    else if (line.includes('TITULAR:')) {
+                        // Segunda línea - Titular e ID
+                        const parts = line.split('|');
+                        const titular = parts[0].replace('TITULAR:', '').trim();
+                        const id = parts.length > 1 ? parts[1].trim() : '';
+                        formattedHTML += `<div class="mt-1"><span class="font-semibold">Titular:</span> ${titular}</div>`;
+                        formattedHTML += `<div><span class="font-semibold">${id}</span></div>`;
+                    }
+                    else if (line.includes('ESTADO:')) {
+                        // Tercera línea - Estado y vencimiento
+                        const parts = line.split('|');
+                        const estado = parts[0].replace('ESTADO:', '').trim();
+                        const vencimiento = parts.length > 1 ? parts[1].replace('VENCIMIENTO:', '').trim() : '';
+                        
+                        let estadoClass = '';
+                        if (estado === 'VIGENTE') estadoClass = 'text-green-600 font-bold';
+                        else if (estado === 'VENCIDA') estadoClass = 'text-red-600 font-bold';
+                        else if (estado === 'PRÓXIMA A VENCER') estadoClass = 'text-amber-600 font-bold';
+                        else estadoClass = 'text-gray-600 font-bold';
+                        
+                        formattedHTML += `<div class="mt-1">
+                            <span class="font-semibold">Estado:</span> <span class="${estadoClass}">${estado}</span>
+                        </div>`;
+                        formattedHTML += `<div><span class="font-semibold">Vencimiento:</span> ${vencimiento}</div>`;
+                    }
+                    else if (line.includes('Ver documento:')) {
+                        // Última línea - Enlace
+                        const linkMatch = line.match(/(https:\/\/\S+)/);
+                        const link = linkMatch ? linkMatch[1] : '#';
+                        formattedHTML += `<div class="mt-2">
+                            <a href="${link}" target="_blank" class="text-blue-600 hover:underline">
+                                Ver documento <i class="fas fa-external-link-alt ml-1"></i>
+                            </a>
+                        </div>`;
+                    }
+                    else if (line.trim()) {
+                        // Cualquier otra línea de texto
+                        formattedHTML += `<div class="mt-1">${line}</div>`;
+                    }
+                }
+                
+                messageDiv.innerHTML = formattedHTML;
+            } else {
+                // Para mensajes normales, aplicar formato de saltos de línea
+                messageDiv.innerHTML = `<p class="text-sm">${text.replace(/\n/g, '<br>')}</p>`;
+            }
+        } else {
+            // Mensajes del usuario o temporales
+            messageDiv.innerHTML = `<p class="text-sm">${text}</p>`;
+        }
        
         if (isTemporary) {
             messageDiv.id = 'loading-message';
