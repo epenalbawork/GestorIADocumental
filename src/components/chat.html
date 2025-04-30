@@ -1,32 +1,87 @@
 <!-- Chat Component -->
-<div id="chatContainer" class="fixed bottom-4 right-4 w-96 bg-white rounded-lg shadow-lg flex flex-col" style="height: 60px;">
+<div id="chatContainer" class="fixed bottom-4 right-4 w-96 bg-white rounded-lg shadow-lg flex flex-col z-50 transition-all duration-300" style="height: 60px; max-height: 80vh;">
     <!-- Chat Header -->
-    <div class="bg-blue-600 text-white p-4 rounded-t-lg flex justify-between items-center">
-        <h3 class="text-lg font-semibold">Asistente Virtual</h3>
-        <button id="toggleChat" class="text-white hover:text-gray-200" title="Maximizar chat">
-            <i class="fas fa-plus"></i>
-        </button>
+    <div class="bg-blue-600 text-white p-3 rounded-t-lg flex justify-between items-center cursor-pointer" id="chatHeader">
+        <div class="flex items-center">
+            <div class="mr-3 flex-shrink-0">
+                <i class="fas fa-robot text-xl"></i>
+            </div>
+            <h3 class="text-lg font-semibold">Asistente Virtual</h3>
+        </div>
+        <div class="flex items-center space-x-2">
+            <button id="toggleChat" class="text-white hover:text-gray-200 w-8 h-8 flex items-center justify-center rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50" title="Maximizar chat" aria-label="Expandir o minimizar chat">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
     </div>
  
     <!-- Chat Messages -->
-    <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-4">
+    <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
         <!-- Welcome Message -->
-        <div class="bg-blue-100 rounded-lg p-3 max-w-[80%]">
-            <p class="text-sm text-gray-800">¡Hola! Soy tu asistente virtual. ¿En qué puedo ayudarte hoy?</p>
+        <div class="bg-white border border-gray-100 rounded-lg p-3 max-w-[80%] shadow-sm">
+            <div class="flex items-start">
+                <div class="flex-shrink-0 mr-2">
+                    <i class="fas fa-robot text-blue-500"></i>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-800">¡Hola! Soy tu asistente virtual. ¿En qué puedo ayudarte hoy?</p>
+                </div>
+            </div>
         </div>
     </div>
  
     <!-- Chat Input -->
-    <div class="border-t p-4">
+    <div class="border-t p-3 bg-white rounded-b-lg">
         <form id="chatForm" class="flex space-x-2">
             <input type="text" id="chatInput"
-                   class="flex-1 border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                   placeholder="Escribe tu pregunta aquí...">
+                   class="flex-1 border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-700"
+                   placeholder="Escribe tu pregunta aquí..."
+                   aria-label="Mensaje">
             <button type="submit"
-                    class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    title="Enviar mensaje">
+                    class="bg-blue-600 text-white p-2 rounded-full w-10 h-10 flex items-center justify-center hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200 shadow-sm"
+                    title="Enviar mensaje"
+                    aria-label="Enviar mensaje">
                 <i class="fas fa-paper-plane"></i>
             </button>
         </form>
+        <div class="flex justify-center mt-2">
+            <span class="text-xs text-gray-500">Presiona Enter para enviar</span>
+        </div>
+    </div>
+   
+    <!-- Typing Indicator (Oculto por defecto) -->
+    <div id="typingIndicator" class="px-4 py-2 hidden">
+        <div class="flex items-center">
+            <div class="flex-shrink-0 mr-2">
+                <i class="fas fa-robot text-blue-500"></i>
+            </div>
+            <div class="text-gray-500 text-sm flex items-center">
+                <span>Escribiendo</span>
+                <span class="flex ml-1">
+                    <span class="animate-bounce mx-0.5 h-1 w-1 bg-gray-500 rounded-full"></span>
+                    <span class="animate-bounce mx-0.5 h-1 w-1 bg-gray-500 rounded-full" style="animation-delay: 0.2s"></span>
+                    <span class="animate-bounce mx-0.5 h-1 w-1 bg-gray-500 rounded-full" style="animation-delay: 0.4s"></span>
+                </span>
+            </div>
+        </div>
     </div>
 </div>
+ 
+<!-- Script para habilitar también el arrastre del chat (opcional) -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Hacer que el encabezado del chat también pueda expandir/colapsar el chat
+        const chatHeader = document.getElementById('chatHeader');
+        if (chatHeader) {
+            chatHeader.addEventListener('click', function(e) {
+                // Solo ejecutar si el clic no fue en un botón dentro del header
+                if (!e.target.closest('button')) {
+                    const toggleButton = document.getElementById('toggleChat');
+                    if (toggleButton) {
+                        toggleButton.click();
+                    }
+                }
+            });
+        }
+    });
+</script>
