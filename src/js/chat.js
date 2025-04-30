@@ -220,15 +220,7 @@ class ChatBot {
     formatTextWithLinks(text) {
         // Regex para detectar URLs
         const urlRegex = /(https?:\/\/[^\s]+)/g;
-        return text.replace(urlRegex, url => {
-            // Si es un enlace de documento, extraer el ID y crear un enlace interno
-            if (url.includes('page=document&id=')) {
-                const docId = url.split('id=')[1];
-                return `<a href="#" onclick="loadDocumentPage('${docId}'); return false;" class="text-blue-600 hover:underline">Ver documento <i class="fas fa-external-link-alt text-xs"></i></a>`;
-            }
-            // Para otros enlaces, mantener el comportamiento original
-            return `<a href="${url}" target="_blank" class="text-blue-600 hover:underline">${url} <i class="fas fa-external-link-alt text-xs"></i></a>`;
-        });
+        return text.replace(urlRegex, url => `<a href="${url}" target="_blank" class="text-blue-600 hover:underline">${url} <i class="fas fa-external-link-alt text-xs"></i></a>`);
     }
    
     formatDocumentList(text, container) {
@@ -257,7 +249,7 @@ class ChatBot {
             if (!line || !line.includes('|')) continue;
            
             // Extraer nombre, fecha y URL
-            let docName, docDate, docUrl, docId;
+            let docName, docDate, docUrl;
            
             // Comprobar si la línea tiene URL
             if (line.includes('URL:')) {
@@ -265,17 +257,9 @@ class ChatBot {
                 docName = parts[0].replace('•', '').trim();
                 docDate = parts[1].replace('Fecha:', '').trim();
                
-                // Extraer URL y ID si está presente
+                // Extraer URL si está presente
                 const urlMatch = line.match(/URL: (https?:\/\/[^\s]+)/);
-                if (urlMatch) {
-                    docUrl = urlMatch[1];
-                    // Extraer el ID del documento de la URL
-                    const idMatch = docUrl.match(/id=([^&]+)/);
-                    docId = idMatch ? idMatch[1] : null;
-                } else {
-                    docUrl = '#';
-                    docId = null;
-                }
+                docUrl = urlMatch ? urlMatch[1] : '#';
             } else {
                 // Formato antiguo sin URL
                 const docMatch = line.match(/^• (.*) \| Fecha: (.*)/);
@@ -283,7 +267,6 @@ class ChatBot {
                
                 [, docName, docDate] = docMatch;
                 docUrl = '#';
-                docId = null;
             }
            
             // Determinar un ícono basado en el nombre del documento (lógica simplificada)
@@ -321,7 +304,7 @@ class ChatBot {
            
             // Crear un elemento visualmente atractivo para cada documento
             formattedHTML += `
-                <a href="#" onclick="${docId ? `loadDocumentPage('${docId}'); return false;` : 'return false;'}" class="block">
+                <a href="${docUrl}" target="_blank" class="block">
                     <div class="flex items-center p-4 hover:bg-gray-50 border-b border-gray-200 transition-colors duration-200">
                         <div class="${iconColor} mr-3">
                             <i class="fas ${icon}"></i>
@@ -449,46 +432,52 @@ class ChatBot {
        
         // Crear el HTML para el documento (siguiendo el estilo de las imágenes proporcionadas)
         let formattedHTML = `
-            <div class="bg-white rounded-lg shadow-sm p-4">
-                <div class="flex items-start">
-                    <div class="flex-shrink-0 mr-3">
-                        <i class="fas ${estadoIcon}"></i>
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                <div class="flex items-center p-4 border-b border-gray-200">
+                    <i class="fas ${docIcon} text-blue-600 mr-2"></i>
+                    <span class="font-medium text-blue-700">${docTitle || 'Documento'}</span>
+                </div>
+               
+                <div class="p-4 space-y-4">
+                    <div class="flex items-start">
+                        <i class="fas fa-user text-gray-400 mt-1 mr-3 w-5"></i>
+                        <div>
+                            <div class="text-gray-700">Titular:</div>
+                            <div class="font-medium">${titular}</div>
+                        </div>
                     </div>
-                    <div class="flex-1">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-2">${docTitle}</h3>
-                        
-                        <div class="space-y-2">
-                            <div class="flex items-center">
-                                <i class="fas fa-user text-gray-400 mr-2"></i>
-                                <div class="text-gray-700">${titular}</div>
-                            </div>
-                            
-                            ${identificacion ? `
-                            <div class="flex items-center">
-                                <i class="fas fa-id-card text-gray-400 mr-2"></i>
-                                <div class="text-gray-700">${identificacion}</div>
-                            </div>
-                            ` : ''}
-                            
-                            <div class="flex items-center">
-                                <i class="fas fa-circle ${estadoClass} mr-2"></i>
-                                <div class="text-gray-700">${estado}</div>
-                            </div>
-                            
-                            <div class="flex items-center">
-                                <i class="far fa-calendar-alt text-gray-400 mr-2"></i>
-                                <div class="text-gray-700">Vencimiento: ${vencimiento}</div>
-                            </div>
+                   
+                    <div class="flex items-start">
+                        <i class="fas fa-id-card text-gray-400 mt-1 mr-3 w-5"></i>
+                        <div>
+                            <div class="text-gray-700">Identificación:</div>
+                            <div class="font-medium">${identificacion || 'No disponible'}</div>
                         </div>
-                        
-                        ${diasRestantes ? `<div class="text-gray-700 mt-1">${diasRestantes}</div>` : ''}
-                        
-                        <div class="mt-4">
-                            <a href="#" onclick="${docLink !== '#' ? `loadDocumentPage('${docLink.split('id=')[1]}'); return false;` : 'return false;'}" class="inline-flex items-center justify-center bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors duration-200">
-                                <i class="fas fa-external-link-alt mr-2"></i>
-                                Ver documento
-                            </a>
+                    </div>
+                   
+                    <div class="flex items-start">
+                        <i class="fas ${estadoIcon} mt-1 mr-3 w-5"></i>
+                        <div>
+                            <div class="text-gray-700">Estado:</div>
+                            <div class="${estadoClass}">${estado}</div>
                         </div>
+                    </div>
+                   
+                    <div class="flex items-start">
+                        <i class="fas fa-calendar-alt text-gray-400 mt-1 mr-3 w-5"></i>
+                        <div>
+                            <div class="text-gray-700">Vencimiento:</div>
+                            <div class="font-medium">${vencimiento}</div>
+                        </div>
+                    </div>
+                   
+                    ${diasRestantes ? `<div class="text-gray-700 mt-1">${diasRestantes}</div>` : ''}
+                   
+                    <div class="mt-4">
+                        <a href="${docLink}" target="_blank" class="inline-flex items-center justify-center bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors duration-200">
+                            <i class="fas fa-external-link-alt mr-2"></i>
+                            Ver documento
+                        </a>
                     </div>
                 </div>
             </div>
